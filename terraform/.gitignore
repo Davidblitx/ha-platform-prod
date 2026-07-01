@@ -1,0 +1,14 @@
+# Terraform cache and plugins
+.terraform/
+
+# Saved plan files
+tfplan
+*.tfplan
+
+# Local state files (state lives in S3)
+terraform.tfstate
+terraform.tfstate.backup
+
+# Sensitive variables files
+*.tfvars
+*.tfvars.json
