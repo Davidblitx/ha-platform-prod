@@ -12,3 +12,8 @@ output "private_subnet_ids" {
     description = "Private subnet IDs"
     value = module.network.private_subnet_ids
 }
+
+output "alb_dns_name" {
+  description = "The public DNS name of the Application Load Balancer"
+  value       = module.compute.alb_dns_name
+}

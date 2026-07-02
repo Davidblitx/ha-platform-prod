@@ -11,12 +11,12 @@ sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fSSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-sudo tee /etc/apt/sources.list.d/docker-sources.list << 'EOF'
+sudo tee /etc/apt/sources.list.d/docker.sources << EOF
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
-Suites: \$(. /etc/os-release && echo "\${UBUNTU_CODENAME:-\$VERSION_CODENAME}")
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
 Components: stable
-Architectures: \$(dpkg --print-architecture)
+Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
@@ -35,7 +35,7 @@ sudo mkdir -p /opt/app/
 # 5. Write app.py (heredoc)
 cat > /opt/app/app.py << 'EOF'
 from flask import Flask
-app = flask(__name__)
+app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
@@ -57,7 +57,7 @@ EOF
 
 # 7. Write Dockerfile (heredoc)
 cat > /opt/app/Dockerfile << 'EOF'
-FROM pythin:3.11-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
