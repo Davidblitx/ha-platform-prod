@@ -56,7 +56,7 @@ resource "aws_security_group" "ec2" {
   ingress {
     description     = "Allow reverse proxy traffic from ALB"
     from_port       = 80
-    to_port         = 80    
+    to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
