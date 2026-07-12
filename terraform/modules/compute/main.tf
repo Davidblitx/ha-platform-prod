@@ -29,8 +29,8 @@ resource "aws_launch_template" "app" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-        Name = "${var.env}-asg-instance"
-        Env  = var.env
+      Name = "${var.env}-asg-instance"
+      Env  = var.env
     }
   }
 
@@ -55,8 +55,8 @@ resource "aws_lb_target_group" "app" {
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
-    healthy_threshold   = 2 # 2 consecutive successes = instance is healthy
-    unhealthy_threshold = 3 # 3 consecutive failures = boot the instance out of rotation
+    healthy_threshold   = 2     # 2 consecutive successes = instance is healthy
+    unhealthy_threshold = 3     # 3 consecutive failures = boot the instance out of rotation
     matcher             = "200" # Must return a 200 OK status
   }
 
@@ -113,8 +113,8 @@ resource "aws_autoscaling_group" "app" {
 
   dynamic "tag" {
     for_each = {
-       Name = "${var.env}-asg-instance"
-       Env  = var.env
+      Name = "${var.env}-asg-instance"
+      Env  = var.env
     }
     content {
       key                 = tag.key
