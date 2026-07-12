@@ -25,13 +25,13 @@ module "compute" {
   private_subnet_ids    = module.network.private_subnet_ids
   alb_security_group_id = module.security.alb_security_group_id
   ec2_security_group_id = module.security.ec2_security_group_id
-  
+
   # Configuration parameters
-  ami_id                = "ami-06b9219be654efe2b" 
-  instance_type         = "t3.micro"
-  iam_instance_profile  = "EC2-SSM-Role" 
-  
-  asg_min_size          = 1
-  asg_max_size          = 3
-  asg_desired_capacity  = 2
+  ami_id               = "ami-06b9219be654efe2b"
+  instance_type        = "t3.micro"
+  iam_instance_profile = "EC2-SSM-Role"
+
+  asg_min_size         = 1
+  asg_max_size         = 3
+  asg_desired_capacity = 2
 }
