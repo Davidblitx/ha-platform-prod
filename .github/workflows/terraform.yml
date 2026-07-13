@@ -52,4 +52,5 @@ jobs:
       # Step 8: terraform apply (on push to main only)
       - name: Terraform Apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        environment: production
         run: terraform apply -auto-approve
