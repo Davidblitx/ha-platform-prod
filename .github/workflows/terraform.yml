@@ -7,18 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  terraform:
+  terraform_stage:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: terraform
-
     steps:
-      # Step 1: Checkout code
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      # Step 2: Configure AWS credentials using secrets
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -26,31 +23,50 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      # Step 3: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.10.5 
+          terraform_version: 1.10.5
 
-      # Step 4: terraform init
       - name: Terraform Init
         run: terraform init
 
-      # Step 5: terraform fmt --check
       - name: Terraform Format Check
         run: terraform fmt -check
 
-      # Step 6: terraform validate
       - name: Terraform Validate
         run: terraform validate
 
-      # Step 7: terraform plan (on pull_request only)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan
 
-      # Step 8: terraform apply (on push to main only)
+  terraform_deploy:
+    runs-on: ubuntu-latest
+    needs: terraform_stage
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production # ◄ Perfectly placed at the job level!
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.5
+
+      - name: Terraform Init
+        run: terraform init
+
       - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        environment: production
         run: terraform apply -auto-approve
