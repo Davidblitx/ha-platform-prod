@@ -26,4 +26,4 @@ variable "availability_zones" {
   description = "List of availability zones for the subnets"
   type        = list(string)
   default     = ["eu-west-1a", "eu-west-1b"]
-}
+}# pipeline test
