@@ -103,5 +103,28 @@ sudo nginx -t
 
 sudo systemctl reload nginx
 
+# 15. Install and start node_exporter
+cd /tmp
+curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.12.1/node_exporter-1.12.1.linux-amd64.tar.gz
+tar xzf node_exporter-1.12.1.linux-amd64.tar.gz
+sudo mv node_exporter-1.12.1.linux-amd64/node_exporter /usr/local/bin/
 
+# Create the background systemd service file using a heredoc (EOF)
+sudo tee /etc/systemd/system/node_exporter.service << 'EOF'
+[Unit]
+Description=Node Exporter
+After=network.target
 
+[Service]
+User=nobody
+ExecStart=/usr/local/bin/node_exporter
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd, enable the service to start on system boot, and start it immediately
+sudo systemctl daemon-reload
+sudo systemctl enable node_exporter
+sudo systemctl start node_exporter
