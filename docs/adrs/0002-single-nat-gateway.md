@@ -24,7 +24,7 @@ What this buys us:
 - Roughly half the NAT-related cost of the textbook design, which matters a lot more on a self-funded project than the marginal availability gain does.
 - The inbound, request-serving path, the part that actually determines whether a customer's request succeeds, stays fully multi-AZ. The ALB can still route to healthy instances in either AZ.
 
-What it costs us:
+**What it costs us:**
 
 - eu-west-1a is now a single point of failure for outbound connectivity. If that AZ has an outage, or even just the NAT Gateway itself fails, private-subnet instances in eu-west-1b lose their route to the internet even though the AZ they're physically in is healthy. In practice this means: no OS updates, no new image pulls from ECR, and no reachability to the SSM endpoints for any instance whose route table points at that dead NAT Gateway.
 - Concretely for this platform: an already-running instance in 1b keeps serving traffic through the ALB just fine during that outage, since inbound HTTPS doesn't touch the NAT Gateway at all. What breaks is anything requiring outbound access, a new instance in 1b trying to pull its container image at boot would fail to start, and nobody could SSM into any 1b instance to debug it, because SSM connectivity depends on that same broken outbound path.
