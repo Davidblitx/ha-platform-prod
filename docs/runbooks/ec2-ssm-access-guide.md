@@ -21,7 +21,7 @@ aws ec2 describe-instances \
 
 ## Connecting to an instance
 ```bash
-aws ssm start-session --target <instance-id>
+aws ssm start-session --target i-0c002335fe145070b
 ```
 
 You'll land in a shell as `ssm-user`. Switch to root if needed:
