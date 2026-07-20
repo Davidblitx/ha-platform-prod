@@ -16,14 +16,14 @@ Use AWS SSM Session Manager for all instance access. No SSH keys, no bastion hos
 Each EC2 instance is launched with an IAM instance profile that grants the minimum permissions needed for the SSM agent to register with the Systems Manager service (AmazonSSMManagedInstanceCore), and the SSM agent is baked into the AMI/bootstrap so it's running before the instance ever joins the ASG. Access is then granted purely through IAM policy on the human side, engineers get ssm:StartSession permission scoped to instances tagged for this project, not a shared key.
 
 ## Consequences
-What this buys us:
+**What this buys us:**
 
 - Zero open inbound management ports on any instance, in any subnet. The attack surface for credential-stuffing or brute-force SSH attempts is eliminated outright, not just slowed down (Fail2Ban was mitigation; this is removal).
 - Every session is logged centrally — who connected, when, and (if configured) every command run — without relying on individual instances to forward auth logs somewhere.
 - Access control moves to IAM, which means revoking someone's access is an IAM policy change, not a key rotation across every instance they had access to.
 - No bastion host to patch, monitor, or pay for.
 
-What it costs us:
+**What it costs us:**
 
 - Hard dependency on the SSM agent being present and healthy on every instance. If the agent fails to start, or the instance can't reach the SSM endpoints (either directly or via VPC endpoint / NAT), that instance becomes unreachable through the normal path — there's no SSH fallback by design. This is a real single point of failure for "how do I get onto this box" and it needs to be caught by health checks, not discovered during an incident.
 - Every instance needs the IAM instance profile attached at launch time. If the Terraform compute module ever gets refactored and someone forgets to attach the role, that instance silently loses manageability — it'll pass an ALB health check and still be inaccessible for debugging.
