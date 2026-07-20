@@ -41,7 +41,7 @@ aws ssm send-command \
 Then fetch the output:
 ```bash
 aws ssm get-command-invocation \
-  --command-id <command-id-from-above> \
+  --command-id 4d2978f0-ad7d-48e8-8680-f0cc05f9f2b6 \
   --instance-id i-0c002335fe145070b
 ```
 
