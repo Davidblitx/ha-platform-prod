@@ -19,7 +19,7 @@ The ALB and ASG remain genuinely multi-AZ for inbound traffic and instance place
 
 ## Consequences
 
-What this buys us:
+**What this buys us:**
 
 - Roughly half the NAT-related cost of the textbook design, which matters a lot more on a self-funded project than the marginal availability gain does.
 - The inbound, request-serving path, the part that actually determines whether a customer's request succeeds, stays fully multi-AZ. The ALB can still route to healthy instances in either AZ.
