@@ -51,7 +51,7 @@ Once connected via `start-session`:
 Flask/Gunicorn logs (containerized app):
 ```bash
 docker ps
-docker logs --tail 200 -f <container-id>
+docker logs --tail 200 -f 7971ff60c92f
 ```
 
 Nginx access and error logs:
@@ -79,13 +79,13 @@ sudo ss -tlnp | grep :80
 
 Is the app container running and healthy?
 ```bash
-docker ps --filter "name=flask-app"
-docker inspect --format='{{.State.Health.Status}}' <container-id>
+docker ps --filter "name=ha-platform-app"
+docker inspect --format='{{.State.Health.Status}}' 7971ff60c92f
 ```
 
 Check what the ALB thinks of this instance:
 ```bash
-aws elbv2 describe-target-health --target-group-arn <target-group-arn>
+aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:eu-west-1:234444451024:targetgroup/prod-app-tg/21f3629d5036b3d1
 ```
 
 Local health check endpoint (same path the ALB hits):
