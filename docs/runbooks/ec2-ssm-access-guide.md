@@ -107,8 +107,8 @@ sudo systemctl status nginx
 
 Restart the app container:
 ```bash
-docker restart <container-id>
-docker logs --tail 50 <container-id>
+docker restart 7971ff60c92f
+docker logs --tail 50 7971ff60c92f
 ```
 
 If the instance itself is unhealthy and not recovering, don't keep troubleshooting in place. Terminate it and let the ASG replace it:
