@@ -32,7 +32,7 @@ sudo -i
 To run a single command without opening an interactive session:
 ```bash
 aws ssm send-command \
-  --instance-ids <instance-id> \
+  --instance-ids i-0c002335fe145070b \
   --document-name "AWS-RunShellScript" \
   --parameters 'commands=["systemctl status nginx"]' \
   --query "Command.CommandId" \
@@ -42,7 +42,7 @@ Then fetch the output:
 ```bash
 aws ssm get-command-invocation \
   --command-id <command-id-from-above> \
-  --instance-id <instance-id>
+  --instance-id i-0c002335fe145070b
 ```
 
 ## Reading application logs
@@ -114,7 +114,7 @@ docker logs --tail 50 <container-id>
 If the instance itself is unhealthy and not recovering, don't keep troubleshooting in place. Terminate it and let the ASG replace it:
 ```bash
 aws autoscaling terminate-instance-in-auto-scaling-group \
-  --instance-id <instance-id> \
+  --instance-id i-0c002335fe145070b \
   --should-decrement-desired-capacity false
 ```
 This is often the fastest correct move. The ASG launches a replacement from the current launch template automatically.
