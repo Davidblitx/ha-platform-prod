@@ -8,6 +8,9 @@ The original deployment (see `prod-web-server`) ran a Flask app on one EC2 insta
 ## The Solution
 A VPC-native, Auto Scaling Group-backed platform behind an Application Load Balancer, provisioned entirely through modular Terraform with remote state locking, deployed via a GitHub Actions pipeline that requires a plan review and manual approval before anything touches production. Instance access has no SSH anywhere in the stack. Health is visible through a self-hosted Prometheus and Grafana stack running alongside CloudWatch, so a failing instance gets pulled from rotation and replaced automatically, and a human finds out from a Slack alert, not a customer.
 
+## What This Demonstrates
+This project was built deliberately from first principles, every resource provisioned by hand first, then automated, so the automation was understood before it was written. Every architectural decision is documented in an ADR with its tradeoffs. The infrastructure handles the two failure modes that motivated it: a traffic spike that would have taken down the original single instance routes cleanly across two AZs, and the Nginx patch incident that caused 42 minutes of downtime can no longer happen, the ALB catches it and the ASG replaces the instance before a customer notices.
+
 ## Architecture
 ![Architecture Diagram](docs/architecture-diagram.png)
 
