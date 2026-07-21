@@ -18,7 +18,7 @@ A VPC-native, Auto Scaling Group-backed platform behind an Application Load Bala
 This project was built deliberately from first principles, every resource provisioned by hand first, then automated, so the automation was understood before it was written. Every architectural decision is documented in an ADR with its tradeoffs. The infrastructure handles the two failure modes that motivated it: a traffic spike that would have taken down the original single instance routes cleanly across two AZs, and the Nginx patch incident that caused 42 minutes of downtime can no longer happen, the ALB catches it and the ASG replaces the instance before a customer notices.
 
 ## Architecture
-![Architecture Diagram](docs/architecture-diagram.png)
+![Complete Architecture](docs/images/architecture-complete.png)
 
 Public and private subnets across two Availability Zones. The ALB sits in the public subnets and is the only internet-facing component. The Auto Scaling Group runs Flask/Gunicorn containers in the private subnets and is never directly reachable from the internet. Security groups only allow the ALB to talk to the instances, and only allow the instances to talk out through a single NAT Gateway (see ADR-0002 for why it's one, not two).
 
