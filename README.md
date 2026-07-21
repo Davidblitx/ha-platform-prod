@@ -57,6 +57,18 @@ Every non-obvious choice in this platform is documented as an ADR, including the
 - [ADR-0003: Prometheus alongside CloudWatch](docs/adrs/0003-prometheus-over-cloudwatch.md), and why the platform runs both rather than picking one.
 
 ## How to Deploy
+
+### Prerequisites
+
+Before deploying this infrastructure, ensure you have the following:
+
+1. **AWS CLI v2** installed and configured with appropriate IAM credentials.
+2. **Terraform v1.5+** installed locally.
+3. **S3 Backend Bucket & DynamoDB Table**: An S3 bucket for storing state files remotely and a DynamoDB table for state locking must exist prior to initialization.
+   * Update the backend configuration in `terraform/main.tf` (or `backend.tf`) with your exact bucket name and region (`eu-west-1`).
+4. **AWS SSM Session Manager Plugin** installed on your local machine for secure interactive EC2 access without SSH keys.
+
+### Deployment Steps
 ```bash
 # 1. Configure the remote backend (one-time, per environment)
 cd terraform
