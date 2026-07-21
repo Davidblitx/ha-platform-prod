@@ -21,6 +21,9 @@ This project was built deliberately from first principles, every resource provis
 ![Complete Architecture](docs/images/architecture-complete.png)
 A high-availability AWS ecosystem spanning two Availability Zones in eu-west-1, featuring a public ALB that routes web traffic to containerized Flask applications inside isolated private subnets. Managed via a DevSecOps GitHub Actions pipeline with remote S3/DynamoDB state locking, portless SSM management, and full-stack Prometheus/Grafana alerting.
 
+## Infrastructure
+![Infrastructure Diagram](docs/images/infrastructure.png)
+
 Public and private subnets across two Availability Zones. The ALB sits in the public subnets and is the only internet-facing component. The Auto Scaling Group runs Flask/Gunicorn containers in the private subnets and is never directly reachable from the internet. Security groups only allow the ALB to talk to the instances, and only allow the instances to talk out through a single NAT Gateway (see ADR-0002 for why it's one, not two).
 
 ## Tech Stack
