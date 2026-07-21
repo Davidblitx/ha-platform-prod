@@ -19,8 +19,11 @@ This project was built deliberately from first principles, every resource provis
 
 ## Architecture
 ![Complete Architecture](docs/images/architecture-complete.png)
-A high-availability AWS ecosystem spanning two Availability Zones in eu-west-1, featuring a public ALB that routes web traffic to containerized Flask applications inside isolated private subnets. Managed via a DevSecOps GitHub Actions pipeline with remote S3/DynamoDB state locking, portless SSM management, and full-stack Prometheus/Grafana alerting.
+A high-availability AWS platform spanning two Availability Zones in eu-west-1. An internet-facing ALB routes traffic to containerized Flask/Gunicorn/Nginx applications running in private subnets behind an Auto Scaling Group. Infrastructure provisioned entirely through modular Terraform with S3 remote state, deployed via a GitHub Actions pipeline with tflint, tfsec, and manual approval gates. Instance access uses SSM Session Manager, meaning there are no open inbound ports anywhere. Observability via Prometheus, Grafana, and Alertmanager alongside CloudWatch.
 
+> **Note:** Single NAT Gateway in eu-west-1a only. See 
+> [ADR-0002](docs/adrs/0002-single-nat-gateway.md) for the cost/availability 
+> tradeoff behind this decision.
 ## Infrastructure
 ![Infrastructure Diagram](docs/images/infrastructure.png)
 
