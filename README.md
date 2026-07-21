@@ -62,6 +62,7 @@ Every non-obvious choice in this platform is documented as an ADR, including the
 - [ADR-0003: Prometheus alongside CloudWatch](docs/adrs/0003-prometheus-over-cloudwatch.md), and why the platform runs both rather than picking one.
 
 ## How to Deploy
+![CI/CD Pipeline](docs/images/cicd-pipeline.png)
 
 ### Prerequisites
 
