@@ -37,6 +37,24 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      # --- LINTING & SECURITY SCANS ---
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.50.0
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint -f compact
+
+      - name: Run tfsec Security Scan
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          working_directory: terraform
+      # --------------------------------
+
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan
@@ -45,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: terraform_stage
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    environment: production # ◄ Perfectly placed at the job level!
+    environment: production
     defaults:
       run:
         working-directory: terraform
