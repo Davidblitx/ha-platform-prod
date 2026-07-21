@@ -4,6 +4,7 @@
 ![Prometheus](https://img.shields.io/badge/Prometheus-v2.x-E6522C?logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-v11.x-F46800?logo=grafana&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04_LTS-E95420?logo=ubuntu&logoColor=white)
+![tfsec](https://img.shields.io/badge/Security-tfsec-blue?logo=aquasecurity&logoColor=white)
 
 A production-style, highly available web platform on AWS, built to fix three specific failures a single-instance Flask deployment kept hitting: outages under traffic spikes, no automatic recovery from instance failure, and zero visibility into whether the app was actually healthy before a customer noticed it wasn't.
 
@@ -22,12 +23,12 @@ This project was built deliberately from first principles, every resource provis
 Public and private subnets across two Availability Zones. The ALB sits in the public subnets and is the only internet-facing component. The Auto Scaling Group runs Flask/Gunicorn containers in the private subnets and is never directly reachable from the internet. Security groups only allow the ALB to talk to the instances, and only allow the instances to talk out through a single NAT Gateway (see ADR-0002 for why it's one, not two).
 
 ## Tech Stack
-**AWS:** VPC, ALB, ASG, EC2, NAT Gateway, S3, DynamoDB, IAM, SSM
-**IaC:** Terraform (modular: network, compute, security, observability), remote state in S3 with DynamoDB locking
-**App:** Flask, Gunicorn, Docker, Nginx
-**CI/CD:** GitHub Actions (plan-on-PR, manual approval to apply)
-**Observability:** Prometheus, node_exporter, Grafana, Alertmanager, CloudWatch, SNS
-**Scripting:** Bash, Python
+* **AWS:** VPC, ALB, ASG, EC2, NAT Gateway, S3, DynamoDB, IAM, SSM
+* **IaC:** Terraform (modular: network, compute, security, observability), remote state in S3 with DynamoDB locking, **tflint**, **tfsec**
+* **App:** Flask, Gunicorn, Docker, Nginx
+* **CI/CD:** GitHub Actions (format check, tflint, tfsec security scan, plan-on-PR, manual approval gate to apply)
+* **Observability:** Prometheus, node_exporter, Grafana, Alertmanager, CloudWatch, SNS
+* **Scripting:** Bash, Python
 
 ## Project Structure
 ```
@@ -80,7 +81,7 @@ terraform plan -out=tfplan
 # 3. Apply (in CI, this step requires manual approval after PR review)
 terraform apply tfplan
 ```
-In practice, deployment happens through the GitHub Actions pipeline: opening a PR triggers `terraform plan`, which gets posted as a PR comment for review. Nothing applies to production without a manual approval gate after that review.
+In practice, deployment happens through the GitHub Actions pipeline: opening a PR triggers format checks, `tflint` static analysis, and `tfsec` security scans before generating a `terraform plan` that gets posted as a PR comment for review. Nothing applies to production without passing all security checks and receiving a manual approval gate review.
 
 ## Observability
 Grafana is the primary day-to-day dashboard: request rate, latency, error rate per endpoint, and host-level metrics via node_exporter. Alertmanager routes threshold breaches to Slack. CloudWatch and SNS cover what only AWS can see directly, ALB target health, NAT Gateway metrics, and ASG lifecycle events. The reasoning behind running both is in ADR-0003.
