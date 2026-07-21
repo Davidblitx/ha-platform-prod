@@ -1,4 +1,9 @@
 # High-Availability AWS Production Platform & Observability Stack
+![Terraform](https://img.shields.io/badge/Terraform-v1.8+-844FBA?logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-eu--west--1-232F3E?logo=amazon-aws&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-v2.x-E6522C?logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-v11.x-F46800?logo=grafana&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04_LTS-E95420?logo=ubuntu&logoColor=white)
 
 A production-style, highly available web platform on AWS, built to fix three specific failures a single-instance Flask deployment kept hitting: outages under traffic spikes, no automatic recovery from instance failure, and zero visibility into whether the app was actually healthy before a customer noticed it wasn't.
 
