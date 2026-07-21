@@ -21,7 +21,7 @@ aws ec2 describe-instances \
 
 ## Connecting to an instance
 ```bash
-aws ssm start-session --target <instance-id>
+aws ssm start-session --target i-0c002335fe145070b
 ```
 
 You'll land in a shell as `ssm-user`. Switch to root if needed:
@@ -32,7 +32,7 @@ sudo -i
 To run a single command without opening an interactive session:
 ```bash
 aws ssm send-command \
-  --instance-ids <instance-id> \
+  --instance-ids i-0c002335fe145070b \
   --document-name "AWS-RunShellScript" \
   --parameters 'commands=["systemctl status nginx"]' \
   --query "Command.CommandId" \
@@ -41,8 +41,8 @@ aws ssm send-command \
 Then fetch the output:
 ```bash
 aws ssm get-command-invocation \
-  --command-id <command-id-from-above> \
-  --instance-id <instance-id>
+  --command-id 4d2978f0-ad7d-48e8-8680-f0cc05f9f2b6 \
+  --instance-id i-0c002335fe145070b
 ```
 
 ## Reading application logs
@@ -51,7 +51,7 @@ Once connected via `start-session`:
 Flask/Gunicorn logs (containerized app):
 ```bash
 docker ps
-docker logs --tail 200 -f <container-id>
+docker logs --tail 200 -f 7971ff60c92f
 ```
 
 Nginx access and error logs:
@@ -79,13 +79,13 @@ sudo ss -tlnp | grep :80
 
 Is the app container running and healthy?
 ```bash
-docker ps --filter "name=flask-app"
-docker inspect --format='{{.State.Health.Status}}' <container-id>
+docker ps --filter "name=ha-platform-app"
+docker inspect --format='{{.State.Health.Status}}' 7971ff60c92f
 ```
 
 Check what the ALB thinks of this instance:
 ```bash
-aws elbv2 describe-target-health --target-group-arn <target-group-arn>
+aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:eu-west-1:234444451024:targetgroup/prod-app-tg/21f3629d5036b3d1
 ```
 
 Local health check endpoint (same path the ALB hits):
@@ -107,14 +107,14 @@ sudo systemctl status nginx
 
 Restart the app container:
 ```bash
-docker restart <container-id>
-docker logs --tail 50 <container-id>
+docker restart 7971ff60c92f
+docker logs --tail 50 7971ff60c92f
 ```
 
 If the instance itself is unhealthy and not recovering, don't keep troubleshooting in place. Terminate it and let the ASG replace it:
 ```bash
 aws autoscaling terminate-instance-in-auto-scaling-group \
-  --instance-id <instance-id> \
+  --instance-id i-0c002335fe145070b \
   --should-decrement-desired-capacity false
 ```
 This is often the fastest correct move. The ASG launches a replacement from the current launch template automatically.
