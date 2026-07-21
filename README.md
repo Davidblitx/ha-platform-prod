@@ -1,4 +1,4 @@
-# Highly Availability Platform Production with Observability
+# High-Availability AWS Production Platform & Observability Stack
 
 A production-style, highly available web platform on AWS, built to fix three specific failures a single-instance Flask deployment kept hitting: outages under traffic spikes, no automatic recovery from instance failure, and zero visibility into whether the app was actually healthy before a customer noticed it wasn't.
 
