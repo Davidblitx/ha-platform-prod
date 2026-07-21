@@ -89,6 +89,7 @@ terraform apply tfplan
 In practice, deployment happens through the GitHub Actions pipeline: opening a PR triggers format checks, `tflint` static analysis, and `tfsec` security scans before generating a `terraform plan` that gets posted as a PR comment for review. Nothing applies to production without passing all security checks and receiving a manual approval gate review.
 
 ## Observability
+![Monitoring Stack](docs/images/monitoring.png)
 Grafana is the primary day-to-day dashboard: request rate, latency, error rate per endpoint, and host-level metrics via node_exporter. Alertmanager routes threshold breaches to Slack. CloudWatch and SNS cover what only AWS can see directly, ALB target health, NAT Gateway metrics, and ASG lifecycle events. The reasoning behind running both is in ADR-0003.
 
 ## Documentation
